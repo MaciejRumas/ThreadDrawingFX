@@ -16,11 +16,12 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
-        primaryStage.setTitle("Hello World");
-        mainScene = new Scene(root, 800,600, Color.BLACK);
+        Parent root = FXMLLoader.load(getClass().getResource("batman.fxml"));
+        primaryStage.setTitle("Batman integral");
+        mainScene = new Scene(root, 800,600);
         primaryStage.setScene(mainScene);
         primaryStage.show();
+        primaryStage.setResizable(false);
     }
 
 

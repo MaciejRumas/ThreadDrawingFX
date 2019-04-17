@@ -1,49 +1,50 @@
 package model;
 
+import javafx.application.Platform;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.TextField;
 
 
 public class Controller {
 
     @FXML
-    private Button startButton;
+    private TextField pointsAmountTextField;
 
     @FXML
-    private Button stopButton;
+    private TextField valueTextField;
+
+    @FXML
+    private ProgressBar mainProgressBar;
 
     private DrawerTask task;
+    private DrawerTaskValue taskValue;
+
 
     @FXML
     private void handleRunBtnAction(){
+        valueTextField.setText("");
+        task = new DrawerTask(Integer.parseInt(pointsAmountTextField.getText()));
 
-        Canvas canvas = (Canvas)Main.getMainScene().lookup("#mainCanvas");
-        GraphicsContext gc = canvas.getGraphicsContext2D();
-
-        task = new DrawerTask(gc, canvas);
-
-        ProgressBar progressBar = (ProgressBar)Main.getMainScene().lookup("#mainProgressBar");
-        progressBar.progressProperty().bind(task.progressProperty());
+        mainProgressBar = (ProgressBar)Main.getMainScene().lookup("#mainProgressBar");
+        mainProgressBar.progressProperty().bind(task.progressProperty());
 
         task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
             @Override
             public void handle(WorkerStateEvent event) {
-                int var = (int) task.getValue();
+                taskValue = task.getValue();
+                valueTextField.setText(String.format("%.3f",taskValue.getValue()));
             }
         });
-        new Thread(task).start();
+
+        Platform.runLater(()->new Thread(task).start());
     }
 
     @FXML
     private void handleStopBtnAction(){
-
         task.cancel();
     }
-
 
 }
